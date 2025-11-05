@@ -1,0 +1,32 @@
+:host {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(187, 208, 149, 87);
+    
+}
+
+
+.map {
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        gap: 50px;
+
+
+        position: relative; /* base pour le drawer */
+        width: 100%;
+        height: 100%; /* ou ce que tu veux, par exemple la zone de la carte */
+        border: 1px solid #ccc;
+        overflow: hidden; /* optionnel, évite les débordements */
+      
+
+        
+}
+
+
+.btn{
+    height: 30px;
+    width: 50px;
+
+
+}

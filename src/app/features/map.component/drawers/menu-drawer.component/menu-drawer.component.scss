@@ -1,0 +1,28 @@
+.drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 10;
+  }
+  
+  .drawer-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100px;
+    width: 20%;
+    height: 100%;
+    background: #fff;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.2);
+    padding: 1rem;
+  }
+  
+  .btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }

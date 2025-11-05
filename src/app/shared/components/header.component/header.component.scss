@@ -1,0 +1,22 @@
+.header{
+    background-color: rgba(197, 139, 5, 0);
+    margin: 2px;
+    border-radius: 10px;
+    padding: 15px;
+    height: 2vh;
+
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+.logo{ //TODO width 100px -> need to be changed
+    position: absolute;
+    left: 15px;
+}
+
+.center{
+}
+
+
