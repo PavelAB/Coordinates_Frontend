@@ -1,10 +1,18 @@
+
+
 <div class="map">
-    <p>map.component works!</p>
+    <div class="map-base">
 
-    <button (click)="toggleDrawer()" class="btn">Open</button>
+    </div>
+    <div class="map-ui">
+        <p>map.component works!</p>
 
-    @if(firstModalOpen()){
-        <app-menu-drawer
-            (closeDrawer)="toggleDrawer()" />
-    }
+        <button (click)="toggleDrawer()" class="btn">Open</button>
+
+        @if(firstModalOpen()){
+            <app-menu-drawer
+                (closeDrawer)="toggleDrawer()" />
+        }
+    </div>
+    
 </div>

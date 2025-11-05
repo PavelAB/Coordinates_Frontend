@@ -1,32 +1,57 @@
 :host {
     width: 100%;
-    height: 100%;
-    background-color: rgba(187, 208, 149, 87);
+    min-height: 10vh;
+    border: 1px solid red;
+    background-color: rgba(187, 208, 149, 0.87);
     
 }
 
 
 .map {
-        display: flex;
-        flex-direction: row;
-        justify-content: end;
-        gap: 50px;
-
-
-        position: relative; /* base pour le drawer */
-        width: 100%;
-        height: 100%; /* ou ce que tu veux, par exemple la zone de la carte */
-        border: 1px solid #ccc;
-        overflow: hidden; /* optionnel, évite les débordements */
-      
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    flex: 1 1 auto;
+    
+    width: 100%;
+    min-height: 0;
+    position: relative; 
+    height: 100%; 
+    z-index: 0;
+    //overflow: hidden;
+    overflow: visible;
 
         
+}
+
+.map-base{
+    position: fixed;       /* si tu veux dépasser sous le footer */
+    // inset: 0;
+    top: -50px;
+    left: 0;
+    right: 0;
+    //bottom: 0;
+    bottom: -50px;
+    background: rgb(136, 167, 156);
+    // width: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+.map-ui{
+    position: relative;
+    z-index: 10;
+
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: 50px;
+    flex-direction: row;
+    justify-content: end;
+    border: 1px solid black;
 }
 
 
 .btn{
     height: 30px;
     width: 50px;
-
-
 }

@@ -1,15 +1,15 @@
-:host {
+:host { // All page
+    min-height: 100vh;
+    max-height: 100vh;
     height: 100%;
-    background-color: black;
     display: flex;
     flex-direction: column; 
-    background-color: rgb(179, 177, 177);
+    background-color: rgb(141, 140, 140);
 }
 
 .main{
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
 
     border: 1px solid black;
