@@ -15,6 +15,11 @@
     background: #fff;
     box-shadow: 2px 0 6px rgba(0,0,0,0.2);
     padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    
   }
   
   .btn-close {

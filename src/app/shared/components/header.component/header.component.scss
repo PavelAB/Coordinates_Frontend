@@ -17,5 +17,12 @@
     position: absolute;
     left: 15px;
 }
-
+.center {
+    display: flex;
+    gap: 5px;
+}
+.right{
+    position: absolute;
+    right: 15px;
+}
 

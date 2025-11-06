@@ -25,7 +25,7 @@
 }
 
 .map-base{
-    position: fixed;       /* si tu veux dépasser sous le footer */
+    position: fixed;       
     // inset: 0;
     top: -50px;
     left: 0;
@@ -33,6 +33,7 @@
     //bottom: 0;
     bottom: -50px;
     background: rgb(136, 167, 156);
+    // background-color: red;
     // width: 100%;
     pointer-events: none;
     z-index: 0;
