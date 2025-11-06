@@ -1,0 +1,8 @@
+@if (tempConnected()) {
+    <app-signup />
+}
+@else {
+    <app-signin />
+}
+
+<button (click)="toggleConnected()">Toggle</button>
