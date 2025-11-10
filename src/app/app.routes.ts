@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '@core/guards/auth-guard';
 
 export const routes: Routes = [
     {
@@ -14,7 +15,8 @@ export const routes: Routes = [
     {
         path: 'profile',
         loadComponent: () => import('@features/profile.component/profile.component').then(c => c.ProfileComponent),
-        title: 'Coordinates'
+        title: 'Coordinates',
+        canActivate: [authGuard]
     },
     {
         path: 'info',
