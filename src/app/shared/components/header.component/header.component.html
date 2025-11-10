@@ -9,6 +9,12 @@
         
     </div>
     <div class="right">
-        <a routerLink="/profile">Profile</a>
+       
+        @if(!user()?.Login){
+             <a routerLink="/profile">Profile</a>
+        }
+        @else {
+            <a routerLink="/profile">{{user()?.Login}}</a>
+        }
     </div>
 </section>
