@@ -1,14 +1,14 @@
 
 
-<div class="map">
-    <div class="map-base">
+<div class="map" >
+    <div class="map-base" #mapElement>
 
     </div>
     <div class="map-ui">
         <p>map.component works!</p>
 
         <button (click)="toggleDrawer()" class="btn">Open</button>
-        
+
         @if(firstModalOpen()){
             <app-menu-drawer
                 (closeDrawer)="toggleDrawer()" />

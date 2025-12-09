@@ -2,6 +2,13 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { MenuDrawerComponent } from "./drawers/menu-drawer.component/menu-drawer.component";
 import { SpotService } from './services/spot.service';
 import { SpotParams } from './models/SpotsParams';
+import { AfterViewInit, ElementRef, ViewChild } from '@angular/core'
+import Map from 'ol/Map'
+import View from 'ol/View'
+import TileLayer from 'ol/layer/Tile'
+import OSM from 'ol/source/OSM'
+import Attribution from 'ol/control/Attribution.js';
+import { fromLonLat } from 'ol/proj'
 
 @Component({
   selector: 'app-map.component',
@@ -9,7 +16,7 @@ import { SpotParams } from './models/SpotsParams';
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
-export class MapComponent {
+export class MapComponent implements AfterViewInit{
     
     private readonly _spotService = inject(SpotService)
 
@@ -32,4 +39,25 @@ export class MapComponent {
         this._spotService.getSpots({} as SpotParams)
         
     }
+
+
+    @ViewChild('mapElement', { static: false })
+  mapElement!: ElementRef<HTMLDivElement>
+
+  private map!: Map
+
+  ngAfterViewInit(): void {
+    this.map = new Map({
+      target: this.mapElement.nativeElement,
+      layers: [
+        new TileLayer({
+          source: new OSM()
+        })
+      ],
+      view: new View({
+        center: fromLonLat([4.3517, 50.8503]), // Bruxelles
+        zoom: 12
+      })
+    })
+  }
 }

@@ -1,58 +1,45 @@
 :host {
-    width: 100%;
-    min-height: 10vh;
-    border: 1px solid red;
-    background-color: rgba(187, 208, 149, 0.87);
-    
+  display: block;
+  width: 100%;
+
+  /* plus besoin de height ici, la carte est en fixed */
 }
 
-
+/* Conteneur global (surtout utile pour l’UI) */
 .map {
-    display: flex;
-    flex-direction: row;
-    justify-content: end;
-    flex: 1 1 auto;
-    
-    width: 100%;
-    min-height: 0;
-    position: relative; 
-    height: 100%; 
-    z-index: 0;
-    //overflow: hidden;
-    overflow: visible;
-
-        
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-.map-base{
-    position: fixed;       
-    // inset: 0;
-    top: -50px;
-    left: 0;
-    right: 0;
-    //bottom: 0;
-    bottom: -50px;
-    background: rgb(136, 167, 156);
-    // background-color: red;
-    // width: 100%;
-    pointer-events: none;
-    z-index: 0;
-}
-.map-ui{
-    position: relative;
-    z-index: 10;
-
-    width: 100%;
-    height: 100%;
-    display: flex;
-    gap: 50px;
-    flex-direction: row;
-    justify-content: end;
-    border: 1px solid black;
+/* Carte OpenLayers : en arrière-plan, plein écran, sous header/footer */
+.map-base {
+  position: fixed;
+  top: -50px;
+  left: 0;
+  right: 0;
+  bottom: -50px;  // comme tu avais avant
+  z-index: 0;
+  pointer-events: auto;  // la carte reçoit les clics
 }
 
+/* UI par-dessus la carte, mais qui laisse passer les clics sauf sur les éléments interactifs */
+.map-ui {
+  position: relative;
+  height: 100%;
+  border: 1px solid red;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;   // laisse passer vers la carte par défaut
 
-.btn{
-    height: 30px;
-    width: 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+/* Ce qui doit être cliquable repasse en pointer-events:auto */
+.btn,
+app-menu-drawer {
+  pointer-events: auto;
 }
