@@ -20,6 +20,8 @@ export class AuthService implements OnDestroy{
     private readonly _http = inject(HttpClient) 
     private readonly _storage = inject(StorageService)
     private storageHandler = (event: StorageEvent) =>{
+        console.log("Storage Test", event);
+        
         if (event.key?.endsWith(TOKEN)) this._token.set(this._storage.getItem(TOKEN))
     }   
 
@@ -39,11 +41,11 @@ export class AuthService implements OnDestroy{
             if(t) this._storage.setItem(TOKEN, t)
             else this._storage.removeItem(TOKEN)
         })
-        effect(() => {
-            console.log("token ==>", this.token())
-            console.log("isAuthentificated ==>", this.isAuthenticated())
-            console.log("user ==> ", this.user())            
-        })
+        // effect(() => {
+        //     // console.log("token ==>", this.token())
+        //     // console.log("isAuthentificated ==>", this.isAuthenticated())
+        //     // console.log("user ==> ", this.user())            
+        // })
 
 
         window.addEventListener('storage', this.storageHandler)

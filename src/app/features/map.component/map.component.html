@@ -8,7 +8,7 @@
         <p>map.component works!</p>
 
         <button (click)="toggleDrawer()" class="btn">Open</button>
-
+        
         @if(firstModalOpen()){
             <app-menu-drawer
                 (closeDrawer)="toggleDrawer()" />

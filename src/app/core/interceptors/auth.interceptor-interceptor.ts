@@ -11,9 +11,5 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const token = auth.token()
 
     const withAuth = token ? req.clone({setHeaders: { Authorization: token}}) : req
-  
-    console.log("iM here ====================", token)
-
-    
     return next(withAuth)
 };
