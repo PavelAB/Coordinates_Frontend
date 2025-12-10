@@ -7,6 +7,18 @@
     <div class="map-ui">
         <p>map.component works!</p>
 
+        <button class="btn" (click)="setMode('start')">
+            Placer départ
+        </button>
+        
+        <button class="btn" (click)="setMode('end')">
+            Placer arrivée
+        </button>
+
+        <button class="btn" (click)="addPoints()">
+            Placer points
+        </button>
+
         <button (click)="toggleDrawer()" class="btn">Open</button>
 
         @if(firstModalOpen()){

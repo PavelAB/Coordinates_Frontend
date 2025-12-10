@@ -1,6 +1,14 @@
 <aside class="drawer-left">
     <div>
         Spot
+        @if(routePoints().start) {
+            <p>Lat : {{ routePoints().start!.lat }}<br>
+            Lon : {{ routePoints().start!.lon }}</p>
+        }
+        @if(routePoints().end) {
+            <p>Lat : {{ routePoints().end!.lat }}<br>
+            Lon : {{ routePoints().end!.lon }}</p>
+        }
     </div>
     <div>
         Track
