@@ -7,6 +7,8 @@ import { Result } from '@shared/models/Result';
 import { Spot } from '../models/Spot';
 import { addParams } from '@shared/utils/addParams';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, map, of, Observable } from 'rxjs';
+import { CrudService } from '@core/services/crud.service';
 
 
 
@@ -18,38 +20,25 @@ const BASE_URL = environment.API_URL
 export class SpotService {
 
     private readonly _http = inject(HttpClient)
-
-    private _spotsLight = signal<Spot[] | null>(null)
-    private _spots = signal<Spot[] | null>(null)
-    
-    readonly spots = this._spots.asReadonly()
-    readonly spotsLight = this._spotsLight.asReadonly()
+    private readonly crud = new CrudService<Spot, SpotParams>(`${BASE_URL}/Spot`)
 
     public getSpotsLight(params: SpotParams){
-        this._http.get<Result<Spot[]>>(`${BASE_URL}/Spot/GetSpotsLight`, {
-            params: addParams(params)
-        }).subscribe({
-            next: (res: Result<Spot[]>) => {  
-                this._spotsLight.set(res.Content as Spot[])
-            },
-            error: (err: HttpErrorResponse) => {
-                console.log("testWrong");
-                const backError = err.error as Result<Spot>
-            }
-        })
+        const request$: Observable<Spot[]> = this._http
+            .get<Result<Spot[]>>(`${BASE_URL}/Spot/GetSpotsLight`, {
+                params: addParams(params)
+            })
+            .pipe(
+                map((res: Result<Spot[]>) => res.Content as Spot[]),
+                catchError((err: HttpErrorResponse) => {
+                    console.log('Erreur GetSpotsLight', err)
+                    return of([] as Spot[])                
+            })
+        )
+        return toSignal(request$, { initialValue: [] })
+        
     }
+
     public getSpots(params: SpotParams){
-        this._http.get<Result<Spot[]>>(`${BASE_URL}/Spot/GetSpots`, {
-            params: addParams(params)
-        }).subscribe({
-            next: (res: Result<Spot[]>) => {
-                           
-                this._spots.set(res.Content as Spot[])
-            },
-            error: (err: HttpErrorResponse) => {
-                console.log("testWrong");
-                const backError = err.error as Result<Spot>
-            }
-        })
+        return this.crud.getAll('GetSpots', params)        
     }
 }
