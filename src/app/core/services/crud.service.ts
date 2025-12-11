@@ -10,7 +10,7 @@ import { SpotParams } from '@features/map.component/models/SpotsParams'
 // @Injectable({
 //     providedIn: 'root',
 // })
-export class CrudService<T, P extends string | SpotParams > {
+export class CrudService<T, P extends SpotParams > {
     private readonly http = inject(HttpClient)
 
     constructor(private readonly baseUrl: string) { }

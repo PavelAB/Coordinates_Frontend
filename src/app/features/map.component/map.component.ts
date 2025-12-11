@@ -15,9 +15,9 @@ import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import CircleStyle from 'ol/style/Circle';
 import Feature from 'ol/Feature';
-import { Point } from 'ol/geom';
+import { LineString, Point } from 'ol/geom';
 import Translate from 'ol/interaction/Translate.js';
-import { PointType} from './models/Points';
+import { PointCoords, PointType } from './models/Points';
 import { MapStateService } from './services/map-state.service';
 import { Spot } from './models/Spot';
 
@@ -36,8 +36,9 @@ export class MapComponent implements AfterViewInit {
 
     private readonly _spotService = inject(SpotService)
     private readonly mapState = inject(MapStateService)
-    
+
     private markerSource = new VectorSource()
+    private routeSource = new VectorSource()
     private markerLayer = new VectorLayer({
         source: this.markerSource,
         style: feature => {
@@ -56,6 +57,15 @@ export class MapComponent implements AfterViewInit {
                 })
             })
         }
+    })
+    private routeLayer = new VectorLayer({
+        source: this.routeSource,
+        style: new Style({
+            stroke: new Stroke({
+                width: 3,
+                color: '#ff0000'
+            })
+        })
     })
 
     private startFeature: Feature<Point> | null = null
@@ -83,22 +93,22 @@ export class MapComponent implements AfterViewInit {
         this.currentMode = mode
     }
 
-    private updatePoints(key: PointType, lon: number, lat: number){
-        
+    private updatePoints(key: PointType, lon: number, lat: number) {
+
         this.mapState.routePoints.update(prev => {
-                    const next = { ...prev }          
-                    next[key] = { lon, lat } 
-                    return next
+            const next = { ...prev }
+            next[key] = { lon, lat }
+            return next
         })
     }
 
-    addPoints():void {
+    addPoints(): void {
         let points: Spot[] | null = []
 
-        if(this.spotsLight)
+        if (this.spotsLight)
             points = this.spotsLight()
-        
-        if(!points)
+
+        if (!points)
             throw new Error("Points can't be null")
 
         const features = points.map((p: Spot) => {
@@ -120,6 +130,7 @@ export class MapComponent implements AfterViewInit {
                 new TileLayer({
                     source: new OSM()
                 }),
+                this.routeLayer,
                 this.markerLayer
             ],
             view: new View({
@@ -197,13 +208,42 @@ export class MapComponent implements AfterViewInit {
 
             feature.set('lon', lon)
             feature.set('lat', lat)
-                
+
             if (type === 'start')
                 this.updatePoints(type, lon, lat)
 
             if (type === 'end')
                 this.updatePoints(type, lon, lat)
 
+        })
+    }
+
+    addTrack(): void {
+
+        console.log("Im here");
+        console.log("TRACK", this.mapState.newTrack())
+
+        if (!this.mapState.newTrack())
+            throw new Error("No Polyline")
+
+        const polyline: number[][] = JSON.parse(this.mapState.newTrack()?.PolyLine as string)
+        const points: [number, number][] = polyline.map(([lon, lat]) => [lon, lat])
+
+        this.drawRoute(points)
+    }
+
+    drawRoute(points: [number, number][]): void {
+        const projected = points.map(p => fromLonLat(p))
+
+        const line = new LineString(projected)
+        const feature = new Feature({ geometry: line })
+
+        this.routeSource.clear()      // si tu veux un seul parcours
+        this.routeSource.addFeature(feature)
+
+        this.map.getView().fit(line.getExtent(), {
+            padding: [50, 50, 50, 50],
+            maxZoom: 16
         })
     }
 }

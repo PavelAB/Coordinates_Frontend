@@ -1,7 +1,8 @@
 import { HttpParams } from "@angular/common/http";
+import { ORSParams } from "@features/map.component/drawers/models/ORSParams";
 import { SpotParams } from "@features/map.component/models/SpotsParams";
 
-export function addParams<T extends string | SpotParams>(params: T): HttpParams{
+export function addParams<T extends SpotParams | ORSParams>(params: T): HttpParams{
     let httpParams = new HttpParams()
 
     if (params) {
