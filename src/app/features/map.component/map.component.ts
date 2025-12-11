@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, EnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
 import { MenuDrawerComponent } from "./drawers/menu-drawer.component/menu-drawer.component";
 import { SpotService } from './services/spot.service';
 import { SpotParams } from './models/SpotsParams';
@@ -17,10 +17,9 @@ import CircleStyle from 'ol/style/Circle';
 import Feature from 'ol/Feature';
 import { Point } from 'ol/geom';
 import Translate from 'ol/interaction/Translate.js';
-import { PointType, RoutePoints } from './models/Points';
+import { PointType} from './models/Points';
 import { MapStateService } from './services/map-state.service';
 import { Spot } from './models/Spot';
-import { ArgumentOutOfRangeError, EmptyError } from 'rxjs';
 
 
 type PointMode = 'none' | 'start' | 'end'
@@ -71,37 +70,24 @@ export class MapComponent implements AfterViewInit {
     currentPointFeature: Feature<Point> | null = null
     currentCoords: { lon: number; lat: number } | null = null
 
-    spots = this._spotService.spots
-    spotsLight = this._spotService.spotsLight
 
+    spotsLight = this._spotService.getSpotsLight({} as SpotParams)
     firstModalOpen = signal(false)
 
-    test = effect(() => {
-        console.log('Nouvelle valeur de count :', this.spots())
-    })
-    test2 = effect(() => {
-        console.log('Nouvelle valeur de count Light:', this.spotsLight())
-    })
 
     toggleDrawer() {
         this.firstModalOpen.update(v => !v)
-        console.log("test => ", this.firstModalOpen())
-        this._spotService.getSpotsLight({} as SpotParams)
-        this._spotService.getSpots({} as SpotParams)
     }
 
     setMode(mode: PointMode) {
         this.currentMode = mode
-        console.log('mode =', this.currentMode)
     }
 
     private updatePoints(key: PointType, lon: number, lat: number){
-        console.log("key ==>", key);
         
         this.mapState.routePoints.update(prev => {
-                    const next = { ...prev }           // copie l'objet RoutePoints
+                    const next = { ...prev }          
                     next[key] = { lon, lat } 
-                    console.log("next ===> ", next);
                     return next
         })
     }
@@ -109,8 +95,9 @@ export class MapComponent implements AfterViewInit {
     addPoints():void {
         let points: Spot[] | null = []
 
-        points = this._spotService.spotsLight()
-
+        if(this.spotsLight)
+            points = this.spotsLight()
+        
         if(!points)
             throw new Error("Points can't be null")
 
@@ -133,7 +120,7 @@ export class MapComponent implements AfterViewInit {
                 new TileLayer({
                     source: new OSM()
                 }),
-                this.markerLayer          // ← couche du point
+                this.markerLayer
             ],
             view: new View({
                 center: fromLonLat([4.3517, 50.8503]),
@@ -217,7 +204,6 @@ export class MapComponent implements AfterViewInit {
             if (type === 'end')
                 this.updatePoints(type, lon, lat)
 
-            console.log('drag end ->', this.currentCoords)
         })
     }
 }

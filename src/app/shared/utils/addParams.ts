@@ -1,7 +1,7 @@
 import { HttpParams } from "@angular/common/http";
 import { SpotParams } from "@features/map.component/models/SpotsParams";
 
-export function addParams(params: SpotParams): HttpParams{
+export function addParams<T extends string | SpotParams>(params: T): HttpParams{
     let httpParams = new HttpParams()
 
     if (params) {
