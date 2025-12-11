@@ -18,38 +18,15 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
     // OLD and BAD exemple
     trackResponse: ReturnType<OrsService['getORSTrack']> | null = null
-    
     //trackResponse: Signal<ORS_Track> | null = null
+    
+
+    // Good ??
     //trackResponse: WritableSignal<ORS_Track>  = signal<ORS_Track>({} as ORS_Track)
 
     routePoints = this.mapState.routePoints
 
     closeDrawer: OutputEmitterRef<void> = output()
-
-    // constructor(){
-    //     effect(() => {
-    //     // if(!this.trackResponse){
-    //     //     console.log("check out");
-            
-    //     //     return
-    //     // }
-    //     const sig = this.trackResponse
-    //     if (sig)
-    //     console.log('result TEST => ', sig())
-    // })
-    // }
-
-
-    // logTrackResponseEffect = effect(() => {
-    //     // if(!this.trackResponse){
-    //     //     console.log("check out");
-            
-    //     //     return
-    //     // }
-    //     const sig = this.trackResponse
-    //     if (sig)
-    //     console.log('result TEST => ', sig())
-    // })
 
 
     ngOnInit(): void {
@@ -98,7 +75,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
         
 
-
+        // Good ??
         // runInInjectionContext(this.injector, () => {
         //     const test = this.ORSService.getORSTrack(params)();
         //     console.log(test);
@@ -124,10 +101,6 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
         console.log("SIGNAL ===>", this.trackResponse!());
         
     }
-
-    // testUpdateSignal(){
-    //     this.trackResponse!.set({} as ORS_Track)
-    // }
 
 
 
