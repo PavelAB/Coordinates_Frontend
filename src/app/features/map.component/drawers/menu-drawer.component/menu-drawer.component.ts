@@ -1,7 +1,6 @@
 import { Component, effect, inject, OnDestroy, OnInit, output, OutputEmitterRef } from '@angular/core'
 import { MapStateService } from '@features/map.component/services/map-state.service'
 import { ORSParams } from '../models/ORSParams'
-import { ORS_Track } from '../models/ORSTrack'
 import { OrsStore } from '@features/map.component/services/ors-store.service'
 
 @Component({
@@ -39,20 +38,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     handleClick() {
         this.closeDrawer.emit()
     }
-
-    handleDisplayTrack(): void {
-        console.log("track =>", this.mapState.newTrack())
-    }
-
-
-    // handleUpdateTrack():void{
-    //     console.log("Response TRACK ===>", this.track())
-
-    //     console.log("temp +>+ ", temp);
-    //     this.mapState.newTrack.update(prev => {return temp})
-    //     console.log("update DONE");        
-    // }
-
+    
     handleGenerateTrack(): void {
 
         if (!this.routePoints().start || !this.routePoints().end)
@@ -73,11 +59,5 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     roundCoordinates(value: number): number {
         return Math.round(value * 1e6) / 1e6
     }
-
-    // testDisplaySignal():void{
-    //     console.log("SIGNAL ===>", this.trackResponse!());        
-    // }
-
-
 
 }

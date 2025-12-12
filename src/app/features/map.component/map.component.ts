@@ -1,4 +1,4 @@
-import { Component, effect, EnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core'
+import { Component, effect, inject, signal } from '@angular/core'
 import { MenuDrawerComponent } from "./drawers/menu-drawer.component/menu-drawer.component"
 import { SpotService } from './services/spot.service'
 import { SpotParams } from './models/SpotsParams'
@@ -17,7 +17,7 @@ import CircleStyle from 'ol/style/Circle'
 import Feature from 'ol/Feature'
 import { LineString, Point } from 'ol/geom'
 import Translate from 'ol/interaction/Translate.js'
-import { PointCoords, PointType } from './models/Points'
+import { PointType } from './models/Points'
 import { MapStateService } from './services/map-state.service'
 import { Spot } from './models/Spot'
 import { OrsStore } from './services/ors-store.service'
@@ -38,6 +38,17 @@ export class MapComponent implements AfterViewInit {
     private readonly _spotService = inject(SpotService)
     private readonly mapState = inject(MapStateService)
     private readonly orsStore = inject(OrsStore)
+
+    spotsLight = this._spotService.getSpotsLight({} as SpotParams)
+    private orsTrack = this.orsStore.track
+    firstModalOpen = signal(false)
+
+    // Map variables    
+
+    @ViewChild('mapElement', { static: false })
+    mapElement!: ElementRef<HTMLDivElement>
+
+    private map!: Map
 
     private markerSource = new VectorSource()
     private routeSource = new VectorSource()
@@ -65,27 +76,15 @@ export class MapComponent implements AfterViewInit {
         style: new Style({
             stroke: new Stroke({
                 width: 3,
-                color: '#ff0000'
+                color: '#b65555ff'
             })
         })
     })
 
     private startFeature: Feature<Point> | null = null
-    private endFeature: Feature<Point> | null = null
+    private endFeature: Feature<Point> | null = null    
 
-
-    @ViewChild('mapElement', { static: false })
-    mapElement!: ElementRef<HTMLDivElement>
-
-    private map!: Map
-
-    currentPointFeature: Feature<Point> | null = null
-    currentCoords: { lon: number; lat: number } | null = null
-
-
-    spotsLight = this._spotService.getSpotsLight({} as SpotParams)
-    private orsTrack = this.orsStore.track
-    firstModalOpen = signal(false)
+    // Effects
 
     private readonly _trackEffect = effect(() => {
         const t = this.orsTrack()
@@ -98,6 +97,7 @@ export class MapComponent implements AfterViewInit {
 
     })
 
+    // Functions
 
     toggleDrawer() {
         this.firstModalOpen.update(v => !v)
@@ -135,7 +135,6 @@ export class MapComponent implements AfterViewInit {
 
         this.markerSource.addFeatures(features)
     }
-
 
     ngAfterViewInit(): void {
         this.map = new Map({
@@ -232,27 +231,13 @@ export class MapComponent implements AfterViewInit {
         })
     }
 
-    addTrack(): void {
-
-        console.log("Im here")
-        console.log("TRACK", this.mapState.newTrack())
-
-        if (!this.mapState.newTrack())
-            throw new Error("No Polyline")
-
-        const polyline: number[][] = JSON.parse(this.mapState.newTrack()?.PolyLine as string)
-        const points: [number, number][] = polyline.map(([lon, lat]) => [lon, lat])
-
-        this.drawRoute(points)
-    }
-
     drawRoute(points: [number, number][]): void {
         const projected = points.map(p => fromLonLat(p))
 
         const line = new LineString(projected)
         const feature = new Feature({ geometry: line })
 
-        this.routeSource.clear()      // si tu veux un seul parcours
+        this.routeSource.clear() 
         this.routeSource.addFeature(feature)
 
         this.map.getView().fit(line.getExtent(), {
