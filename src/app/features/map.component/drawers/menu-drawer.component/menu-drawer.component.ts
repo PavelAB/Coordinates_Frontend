@@ -18,12 +18,12 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
     // OLD and BAD exemple
     //trackResponse: ReturnType<OrsService['getORSTrack']> | null = null
-    //trackResponse: Signal<ORS_Track> | null = null
+    trackResponse: Signal<ORS_Track> | null = null
     
 
     // Good ??
     // trackResponse: WritableSignal<ORS_Track> = signal<ORS_Track>({Distance: 78} as ORS_Track)
-    trackResponse: WritableSignal<ORS_Track | null> = signal<ORS_Track | null>(null)
+    //trackResponse: WritableSignal<ORS_Track | null> = signal<ORS_Track | null>(null)
 
     routePoints = this.mapState.routePoints
 
@@ -70,25 +70,25 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
         
         // LD and BAD exemple 
-        // runInInjectionContext(this.injector, () => {
-        //     this.trackResponse = this.ORSService.getORSTrack(params)        
-        // })
+        runInInjectionContext(this.injector, () => {
+            this.trackResponse = this.ORSService.getORSTrack(params)        
+        })
 
         
         // this.trackResponse();
         //Good ??
-        runInInjectionContext(this.injector, () => {
+        // runInInjectionContext(this.injector, () => {
 
-            //this.trackResponse = this.ORSService.getORSTrack(params);
+        //     //this.trackResponse = this.ORSService.getORSTrack(params);
 
-            const test = this.ORSService.getORSTrack(params);
-            console.log(test);
+        //     const test = this.ORSService.getORSTrack(params);
+        //     console.log(test);
             
-            if(test){
-                console.log(test)                
-                this.trackResponse.set(test()) 
-            }
-        })
+        //     if(test){
+        //         console.log(test)                
+        //         this.trackResponse.set(test()) 
+        //     }
+        // })
         // console.log("result => ", this.trackResponse());
     }
 
