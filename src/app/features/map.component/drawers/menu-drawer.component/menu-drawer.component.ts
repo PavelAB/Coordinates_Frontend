@@ -17,12 +17,13 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     private readonly ORSService = inject(OrsService)
 
     // OLD and BAD exemple
-    trackResponse: ReturnType<OrsService['getORSTrack']> | null = null
+    //trackResponse: ReturnType<OrsService['getORSTrack']> | null = null
     //trackResponse: Signal<ORS_Track> | null = null
     
 
     // Good ??
-    //trackResponse: WritableSignal<ORS_Track>  = signal<ORS_Track>({} as ORS_Track)
+    // trackResponse: WritableSignal<ORS_Track> = signal<ORS_Track>({Distance: 78} as ORS_Track)
+    trackResponse: WritableSignal<ORS_Track | null> = signal<ORS_Track | null>(null)
 
     routePoints = this.mapState.routePoints
 
@@ -40,10 +41,12 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     handleClick() {
         this.closeDrawer.emit()
     }
+
     handleDisplayTrack():void{
-        console.log("track =>", this.mapState.newTrack());
-               
+        console.log("track =>", this.mapState.newTrack())               
     }
+
+
     handleUpdateTrack():void{
         console.log("Response TRACK ===>", this.trackResponse!())
         let temp: ORS_Track = this.trackResponse!() as ORS_Track
@@ -55,9 +58,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     handleGenerateTrack(): void {
 
         if (!this.routePoints().start || !this.routePoints().end)
-            throw new Error("Start ou end point is undefined or null")
-
-        
+            throw new Error("Start ou end point is undefined or null")       
 
 
         let params: ORSParams = new ORSParams(
@@ -69,28 +70,26 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
         
         // LD and BAD exemple 
-        runInInjectionContext(this.injector, () => {
-            this.trackResponse = this.ORSService.getORSTrack(params)        
-        })
-
-        
-
-        // Good ??
         // runInInjectionContext(this.injector, () => {
-        //     const test = this.ORSService.getORSTrack(params)();
-        //     console.log(test);
-            
-        //     if(test){
-        //         console.log(test)                
-        //         this.trackResponse.set(test) 
-        //     }
+        //     this.trackResponse = this.ORSService.getORSTrack(params)        
         // })
 
-
-
-        // console.log("result => ", this.trackResponse());
         
+        // this.trackResponse();
+        //Good ??
+        runInInjectionContext(this.injector, () => {
 
+            //this.trackResponse = this.ORSService.getORSTrack(params);
+
+            const test = this.ORSService.getORSTrack(params);
+            console.log(test);
+            
+            if(test){
+                console.log(test)                
+                this.trackResponse.set(test()) 
+            }
+        })
+        // console.log("result => ", this.trackResponse());
     }
 
     testTemp(value: number):number{
@@ -98,8 +97,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     }
 
     testDisplaySignal():void{
-        console.log("SIGNAL ===>", this.trackResponse!());
-        
+        console.log("SIGNAL ===>", this.trackResponse!());        
     }
 
 
