@@ -40,7 +40,8 @@ export class MapComponent implements AfterViewInit {
     private readonly orsStore = inject(OrsStore)
 
     spotsLight = this._spotService.getSpotsLight({} as SpotParams)
-    private orsTrack = this.orsStore.track
+    private orsTrackData = this.orsStore.track.value
+    private orsTrackIsLoading = this.orsStore.track.isLoading
     firstModalOpen = signal(false)
 
     // Map variables    
@@ -82,12 +83,12 @@ export class MapComponent implements AfterViewInit {
     })
 
     private startFeature: Feature<Point> | null = null
-    private endFeature: Feature<Point> | null = null    
+    private endFeature: Feature<Point> | null = null
 
     // Effects
 
     private readonly _trackEffect = effect(() => {
-        const t = this.orsTrack()
+        const t = this.orsTrackData()
         if (!t || t?.Distance <= 0 || !t?.PolyLine) return
 
         const polyline: number[][] = JSON.parse(t.PolyLine)
@@ -237,7 +238,7 @@ export class MapComponent implements AfterViewInit {
         const line = new LineString(projected)
         const feature = new Feature({ geometry: line })
 
-        this.routeSource.clear() 
+        this.routeSource.clear()
         this.routeSource.addFeature(feature)
 
         this.map.getView().fit(line.getExtent(), {

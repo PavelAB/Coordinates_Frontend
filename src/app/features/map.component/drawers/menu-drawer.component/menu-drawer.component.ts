@@ -15,13 +15,14 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     private readonly orsStore = inject(OrsStore)
 
     routePoints = this.mapState.routePoints
-    readonly track = this.orsStore.track
+    readonly trackData = this.orsStore.track.value
+    readonly trackIsLoading = this.orsStore.track.isLoading
 
     closeDrawer: OutputEmitterRef<void> = output()
 
 
     private readonly _trackEffect = effect(() => {
-        const t = this.track()
+        const t = this.trackData()
         if (!t) return
         console.log('Track changed', t)
     })
@@ -38,7 +39,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     handleClick() {
         this.closeDrawer.emit()
     }
-    
+
     handleGenerateTrack(): void {
 
         if (!this.routePoints().start || !this.routePoints().end)
