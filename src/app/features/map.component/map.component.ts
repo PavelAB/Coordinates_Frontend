@@ -1,25 +1,26 @@
-import { Component, effect, EnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core';
-import { MenuDrawerComponent } from "./drawers/menu-drawer.component/menu-drawer.component";
-import { SpotService } from './services/spot.service';
-import { SpotParams } from './models/SpotsParams';
+import { Component, effect, EnvironmentInjector, inject, runInInjectionContext, signal } from '@angular/core'
+import { MenuDrawerComponent } from "./drawers/menu-drawer.component/menu-drawer.component"
+import { SpotService } from './services/spot.service'
+import { SpotParams } from './models/SpotsParams'
 import { AfterViewInit, ElementRef, ViewChild } from '@angular/core'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
 import { fromLonLat, toLonLat } from 'ol/proj'
-import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
-import Style from 'ol/style/Style';
-import Fill from 'ol/style/Fill';
-import Stroke from 'ol/style/Stroke';
-import CircleStyle from 'ol/style/Circle';
-import Feature from 'ol/Feature';
-import { LineString, Point } from 'ol/geom';
-import Translate from 'ol/interaction/Translate.js';
-import { PointCoords, PointType } from './models/Points';
-import { MapStateService } from './services/map-state.service';
-import { Spot } from './models/Spot';
+import VectorSource from 'ol/source/Vector'
+import VectorLayer from 'ol/layer/Vector'
+import Style from 'ol/style/Style'
+import Fill from 'ol/style/Fill'
+import Stroke from 'ol/style/Stroke'
+import CircleStyle from 'ol/style/Circle'
+import Feature from 'ol/Feature'
+import { LineString, Point } from 'ol/geom'
+import Translate from 'ol/interaction/Translate.js'
+import { PointCoords, PointType } from './models/Points'
+import { MapStateService } from './services/map-state.service'
+import { Spot } from './models/Spot'
+import { OrsStore } from './services/ors-store.service'
 
 
 type PointMode = 'none' | 'start' | 'end'
@@ -36,6 +37,7 @@ export class MapComponent implements AfterViewInit {
 
     private readonly _spotService = inject(SpotService)
     private readonly mapState = inject(MapStateService)
+    private readonly orsStore = inject(OrsStore)
 
     private markerSource = new VectorSource()
     private routeSource = new VectorSource()
@@ -82,7 +84,19 @@ export class MapComponent implements AfterViewInit {
 
 
     spotsLight = this._spotService.getSpotsLight({} as SpotParams)
+    private orsTrack = this.orsStore.track
     firstModalOpen = signal(false)
+
+    private readonly _trackEffect = effect(() => {
+        const t = this.orsTrack()
+        if (!t || t?.Distance <= 0 || !t?.PolyLine) return
+
+        const polyline: number[][] = JSON.parse(t.PolyLine)
+        const points: [number, number][] = polyline.map(([lon, lat]) => [lon, lat])
+
+        this.drawRoute(points)
+
+    })
 
 
     toggleDrawer() {
@@ -220,7 +234,7 @@ export class MapComponent implements AfterViewInit {
 
     addTrack(): void {
 
-        console.log("Im here");
+        console.log("Im here")
         console.log("TRACK", this.mapState.newTrack())
 
         if (!this.mapState.newTrack())
