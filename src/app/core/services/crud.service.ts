@@ -6,11 +6,12 @@ import { toSignal } from '@angular/core/rxjs-interop'
 import { Result } from '@shared/models/Result'
 import { addParams } from '@shared/utils/addParams'
 import { SpotParams } from '@features/map.component/models/SpotsParams'
+import { TrackParams } from '@features/map.component/models/TrackParams'
 
 // @Injectable({
 //     providedIn: 'root',
 // })
-export class CrudService<T, P extends SpotParams > {
+export class CrudService<T, P extends SpotParams | TrackParams> {
     private readonly http = inject(HttpClient)
 
     constructor(private readonly baseUrl: string) { }
@@ -48,14 +49,23 @@ export class CrudService<T, P extends SpotParams > {
     }
 
     /** POST — crée un nouvel élément */
-    create(endpoint: string, entity: T): Observable<T | null> {
-        return this.http.post<Result<T>>(`${this.baseUrl}/${endpoint}`, entity).pipe(
-            map(res => res.Content as T),
-            catchError((err: HttpErrorResponse) => {
-                console.error('Erreur POST', err)
-                return of(null)
-            })
-        )
+    // create(endpoint: string, entity: T): Observable<T | null> {
+    //     return this.http.post<Result<T>>(`${this.baseUrl}/${endpoint}`, entity).pipe(
+    //         map(res => res.Content as T),
+    //         catchError((err: HttpErrorResponse) => {
+    //             console.error('Erreur POST', err)
+    //             return of(null)
+    //         })
+    //     )
+    // }
+    create(endpoint: string, entity: T): Observable<boolean | null> {
+        return this.http.post<Result<T>>(`${this.baseUrl}/${endpoint}`, entity)
+            .pipe(
+                map(res => res.IsSuccess as boolean),
+                catchError((err: HttpErrorResponse) => {
+                    return of(null)
+                })
+            )
     }
 
     /** PUT — met à jour un élément */

@@ -1,8 +1,9 @@
-import { HttpParams } from "@angular/common/http";
-import { ORSParams } from "@features/map.component/drawers/models/ORSParams";
-import { SpotParams } from "@features/map.component/models/SpotsParams";
+import { HttpParams } from "@angular/common/http"
+import { ORSParams } from "@features/map.component/drawers/models/ORSParams"
+import { SpotParams } from "@features/map.component/models/SpotsParams"
+import { TrackParams } from "@features/map.component/models/TrackParams"
 
-export function addParams<T extends SpotParams | ORSParams>(params: T): HttpParams{
+export function addParams<T extends SpotParams | ORSParams | TrackParams>(params: T): HttpParams {
     let httpParams = new HttpParams()
 
     if (params) {
@@ -14,5 +15,5 @@ export function addParams<T extends SpotParams | ORSParams>(params: T): HttpPara
         }
     }
 
-    return httpParams;
+    return httpParams
 }
