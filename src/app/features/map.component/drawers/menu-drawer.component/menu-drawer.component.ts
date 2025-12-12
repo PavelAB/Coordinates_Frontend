@@ -1,7 +1,8 @@
-import { Component, inject, OnDestroy, OnInit, output, OutputEmitterRef } from '@angular/core';
-import { MapStateService } from '@features/map.component/services/map-state.service';
+import { Component, effect, inject, OnDestroy, OnInit, output, OutputEmitterRef } from '@angular/core'
+import { MapStateService } from '@features/map.component/services/map-state.service'
 import { ORSParams } from '../models/ORSParams'
 import { ORS_Track } from '../models/ORSTrack'
+import { OrsStore } from '@features/map.component/services/ors-store.service'
 
 @Component({
     selector: 'app-menu-drawer',
@@ -12,10 +13,19 @@ import { ORS_Track } from '../models/ORSTrack'
 export class MenuDrawerComponent implements OnInit, OnDestroy {
 
     private readonly mapState = inject(MapStateService)
+    private readonly orsStore = inject(OrsStore)
 
     routePoints = this.mapState.routePoints
+    readonly track = this.orsStore.track
 
     closeDrawer: OutputEmitterRef<void> = output()
+
+
+    private readonly _trackEffect = effect(() => {
+        const t = this.track()
+        if (!t) return
+        console.log('Track changed', t)
+    })
 
 
     ngOnInit(): void {
@@ -30,14 +40,14 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
         this.closeDrawer.emit()
     }
 
-    handleDisplayTrack():void{
-        console.log("track =>", this.mapState.newTrack())               
+    handleDisplayTrack(): void {
+        console.log("track =>", this.mapState.newTrack())
     }
 
 
     // handleUpdateTrack():void{
-    //     console.log("Response TRACK ===>", this.trackResponse!())
-    //     let temp: ORS_Track = this.trackResponse!() as ORS_Track
+    //     console.log("Response TRACK ===>", this.track())
+
     //     console.log("temp +>+ ", temp);
     //     this.mapState.newTrack.update(prev => {return temp})
     //     console.log("update DONE");        
@@ -46,7 +56,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     handleGenerateTrack(): void {
 
         if (!this.routePoints().start || !this.routePoints().end)
-            throw new Error("Start ou end point is undefined or null")       
+            throw new Error("Start ou end point is undefined or null")
 
 
         let params: ORSParams = new ORSParams(
@@ -56,9 +66,11 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
             this.roundCoordinates(this.routePoints().end!.lat),
         )
 
+        this.orsStore.loadTrack(params)
+
     }
 
-    roundCoordinates(value: number):number{
+    roundCoordinates(value: number): number {
         return Math.round(value * 1e6) / 1e6
     }
 

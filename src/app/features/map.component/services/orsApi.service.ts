@@ -1,13 +1,11 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable, Signal, signal } from '@angular/core';
-import { SpotParams } from '@features/map.component/models/SpotsParams';
-import { ORS_Track } from '../drawers/models/ORSTrack';
-import { Result } from '@shared/models/Result';
-import { catchError, map, Observable, of } from 'rxjs';
-import { environment } from 'environments/environment.development';
-import { addParams } from '@shared/utils/addParams';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ORSParams } from '../drawers/models/ORSParams';
+import { HttpClient} from '@angular/common/http'
+import { inject, Injectable} from '@angular/core'
+import { ORS_Track } from '../drawers/models/ORSTrack'
+import { Result } from '@shared/models/Result'
+import { map, Observable} from 'rxjs'
+import { environment } from 'environments/environment.development'
+import { addParams } from '@shared/utils/addParams'
+import { ORSParams } from '../drawers/models/ORSParams'
 
 
 const BASE_URL = environment.API_URL

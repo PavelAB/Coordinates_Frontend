@@ -1,4 +1,11 @@
 {
     "typescript.tsdk": "node_modules\\typescript\\lib",
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+
+    "editor.formatOnSave": true,
+
+    "javascript.format.semicolons": "remove",
+    "typescript.format.semicolons": "remove",
+
+    "editor.defaultFormatter": "vscode.typescript-language-features"
 }
