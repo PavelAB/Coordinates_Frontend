@@ -62,10 +62,10 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
 
         let params: ORSParams = new ORSParams(
-            this.testTemp(this.routePoints().start!.lon),
-            this.testTemp(this.routePoints().start!.lat),
-            this.testTemp(this.routePoints().end!.lon),
-            this.testTemp(this.routePoints().end!.lat),
+            this.roundCoordinates(this.routePoints().start!.lon),
+            this.roundCoordinates(this.routePoints().start!.lat),
+            this.roundCoordinates(this.routePoints().end!.lon),
+            this.roundCoordinates(this.routePoints().end!.lat),
         )
 
         
@@ -92,7 +92,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
         // console.log("result => ", this.trackResponse());
     }
 
-    testTemp(value: number):number{
+    roundCoordinates(value: number):number{
         return Math.round(value * 1e6) / 1e6
     }
 
