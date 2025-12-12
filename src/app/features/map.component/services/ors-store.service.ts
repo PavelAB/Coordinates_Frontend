@@ -1,8 +1,7 @@
 import { inject, Injectable, Resource, resource, ResourceLoaderParams, signal } from '@angular/core'
 import { OrsApiService } from './orsApi.service'
 import { ORSParams } from '../drawers/models/ORSParams'
-import { toObservable, toSignal } from '@angular/core/rxjs-interop'
-import { firstValueFrom, of, startWith, switchMap } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import { ORS_Track } from '../drawers/models/ORSTrack'
 
 @Injectable({
@@ -17,9 +16,7 @@ export class OrsStore {
         params: () => this._params(),
         loader: async (
             { params }: ResourceLoaderParams<ORSParams | null>): Promise<ORS_Track | null | undefined> => {
-            if (!params) {
-                return null
-            }
+            if (!params) return null
 
             return firstValueFrom(this.api.getTrack(params))
         }
