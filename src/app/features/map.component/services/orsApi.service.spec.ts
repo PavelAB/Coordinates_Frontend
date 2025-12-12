@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OrsService } from './ors.service';
+import { OrsApiService } from './orsApi.service';
 
 describe('OrsService', () => {
-  let service: OrsService;
+  let service: OrsApiService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(OrsService);
+    service = TestBed.inject(OrsApiService);
   });
 
   it('should be created', () => {

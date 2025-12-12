@@ -1,8 +1,7 @@
-import { Component, effect, EnvironmentInjector, inject, input, InputSignal, OnDestroy, OnInit, output, OutputEmitterRef, Resource, runInInjectionContext, signal, Signal, WritableSignal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, output, OutputEmitterRef } from '@angular/core';
 import { MapStateService } from '@features/map.component/services/map-state.service';
-import { ORSParams } from '../models/ORSParams';
-import { OrsService } from '../services/ors.service';
-import { ORS_Track } from '../models/ORSTrack';
+import { ORSParams } from '../models/ORSParams'
+import { ORS_Track } from '../models/ORSTrack'
 
 @Component({
     selector: 'app-menu-drawer',
@@ -12,18 +11,7 @@ import { ORS_Track } from '../models/ORSTrack';
 })
 export class MenuDrawerComponent implements OnInit, OnDestroy {
 
-    private readonly injector = inject(EnvironmentInjector)
     private readonly mapState = inject(MapStateService)
-    private readonly ORSService = inject(OrsService)
-
-    // OLD and BAD exemple
-    //trackResponse: ReturnType<OrsService['getORSTrack']> | null = null
-    //trackResponse: Signal<ORS_Track> | null = null
-    
-
-    // Good ??
-    // trackResponse: WritableSignal<ORS_Track> = signal<ORS_Track>({Distance: 78} as ORS_Track)
-    trackResponse: WritableSignal<ORS_Track | null> = signal<ORS_Track | null>(null)
 
     routePoints = this.mapState.routePoints
 
@@ -47,13 +35,13 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     }
 
 
-    handleUpdateTrack():void{
-        console.log("Response TRACK ===>", this.trackResponse!())
-        let temp: ORS_Track = this.trackResponse!() as ORS_Track
-        console.log("temp +>+ ", temp);
-        this.mapState.newTrack.update(prev => {return temp})
-        console.log("update DONE");        
-    }
+    // handleUpdateTrack():void{
+    //     console.log("Response TRACK ===>", this.trackResponse!())
+    //     let temp: ORS_Track = this.trackResponse!() as ORS_Track
+    //     console.log("temp +>+ ", temp);
+    //     this.mapState.newTrack.update(prev => {return temp})
+    //     console.log("update DONE");        
+    // }
 
     handleGenerateTrack(): void {
 
@@ -68,37 +56,15 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
             this.roundCoordinates(this.routePoints().end!.lat),
         )
 
-        
-        // LD and BAD exemple 
-        // runInInjectionContext(this.injector, () => {
-        //     this.trackResponse = this.ORSService.getORSTrack(params)        
-        // })
-
-        
-        // this.trackResponse();
-        //Good ??
-        runInInjectionContext(this.injector, () => {
-
-            //this.trackResponse = this.ORSService.getORSTrack(params);
-
-            const test = this.ORSService.getORSTrack(params);
-            console.log(test);
-            
-            if(test){
-                console.log(test)                
-                this.trackResponse.set(test()) 
-            }
-        })
-        // console.log("result => ", this.trackResponse());
     }
 
     roundCoordinates(value: number):number{
         return Math.round(value * 1e6) / 1e6
     }
 
-    testDisplaySignal():void{
-        console.log("SIGNAL ===>", this.trackResponse!());        
-    }
+    // testDisplaySignal():void{
+    //     console.log("SIGNAL ===>", this.trackResponse!());        
+    // }
 
 
 
