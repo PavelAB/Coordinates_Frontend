@@ -17,7 +17,7 @@ import CircleStyle from 'ol/style/Circle'
 import Feature from 'ol/Feature'
 import { LineString, Point } from 'ol/geom'
 import Translate from 'ol/interaction/Translate.js'
-import { PointType } from './models/Points'
+import { PointCoords, PointType } from './models/Points'
 import { MapStateService } from './services/map-state.service'
 import { Spot } from './models/Spot'
 import { OrsStore } from './services/ors-store.service'
@@ -42,6 +42,7 @@ export class MapComponent implements AfterViewInit {
     spotsLight = this._spotService.getSpotsLight({} as SpotParams)
     private orsTrack = this.orsStore.track
     firstModalOpen = signal(false)
+    pointSelected = signal<PointCoords | null>(null)
 
     // Map variables    
 
@@ -82,7 +83,7 @@ export class MapComponent implements AfterViewInit {
     })
 
     private startFeature: Feature<Point> | null = null
-    private endFeature: Feature<Point> | null = null    
+    private endFeature: Feature<Point> | null = null
 
     // Effects
 
@@ -94,6 +95,11 @@ export class MapComponent implements AfterViewInit {
         const points: [number, number][] = polyline.map(([lon, lat]) => [lon, lat])
 
         this.drawRoute(points)
+
+    })
+
+    private readonly _pointSelectedEffect = effect(() => {
+        console.log("Selected point", this.pointSelected()?.lat, this.pointSelected()?.lon)
 
     })
 
@@ -130,6 +136,9 @@ export class MapComponent implements AfterViewInit {
                 geometry: new Point(fromLonLat([p.Longitude, p.Latitude]))
             })
             feature.set('draggable', false)
+            feature.set('type', 'spot')
+            feature.set('id', p.IdSpot)
+            feature.set('spot', p)
             return feature
         })
 
@@ -154,8 +163,7 @@ export class MapComponent implements AfterViewInit {
 
         // 1) Click sur la carte → créer / déplacer le point
         this.map.on('click', event => {
-            if (this.currentMode === 'none')
-                return
+
 
             const [lon, lat] = toLonLat(event.coordinate)
 
@@ -198,6 +206,22 @@ export class MapComponent implements AfterViewInit {
                 this.updatePoints('end', lon, lat)
             }
 
+            if (this.currentMode === 'none') {
+                this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+                    if (feature.get('type') !== 'spot')
+                        return
+
+                    const spot = feature.get('spot') as Spot | undefined
+                    if (spot)
+                        this.pointSelected.set({ lon: spot.Longitude, lat: spot.Latitude })
+                    console.log('Spot cliqué =>', spot)
+
+
+                    return true
+                })
+            }
+
+
             this.currentMode = 'none'
         })
 
@@ -237,7 +261,7 @@ export class MapComponent implements AfterViewInit {
         const line = new LineString(projected)
         const feature = new Feature({ geometry: line })
 
-        this.routeSource.clear() 
+        this.routeSource.clear()
         this.routeSource.addFeature(feature)
 
         this.map.getView().fit(line.getExtent(), {
