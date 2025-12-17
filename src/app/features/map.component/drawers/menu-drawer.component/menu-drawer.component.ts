@@ -1,10 +1,11 @@
-import { Component, effect, inject, OnDestroy, OnInit, output, OutputEmitterRef, signal } from '@angular/core'
+import { Component, computed, effect, inject, OnDestroy, OnInit, output, OutputEmitterRef, signal } from '@angular/core'
 import { MapStateService } from '@features/map.component/services/map-state.service'
 import { ORSParams } from '../models/ORSParams'
 import { OrsStore } from '@features/map.component/services/ors-store.service'
 import { TrackService } from '@features/map.component/services/track.service'
 import { TrackToCreate } from '@features/map.component/models/Track'
 import { AuthService } from '@features/auth.component/services/auth.service'
+import { PointCoords } from '@features/map.component/models/Points'
 
 @Component({
     selector: 'app-menu-drawer',
@@ -23,6 +24,20 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     user = this._auth.user
     routePoints = this.mapState.routePoints
     readonly track = this.orsStore.track
+    readonly startPoint = computed(() => {
+
+        const track = this.track()
+        if (!track?.PolyLine) return null
+
+        return this.handleGetPointFromPolyline(track.PolyLine, 0)
+    })
+    readonly endPoint = computed(() => {
+
+        const track = this.track()
+        if (!track?.PolyLine) return null
+
+        return this.handleGetPointFromPolyline(track.PolyLine, -1)
+    })
     readonly createResult = signal<boolean | null>(null)
 
     closeDrawer: OutputEmitterRef<void> = output()
@@ -96,6 +111,30 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
     roundCoordinates(value: number): number {
         return Math.round(value * 1e6) / 1e6
+    }
+
+    handleGetPointFromPolyline(polyLine: string, position: number): PointCoords | null {
+
+        const raw = JSON.parse(polyLine) as [number, number, number?][]
+        console.log("ListRaw => ", raw)
+
+        const listCoord: PointCoords[] = raw.map(([lon, lat]) => ({ lon, lat }))
+
+        console.log("ListCoord ==> ", listCoord)
+
+
+        let pointToReturn: PointCoords | null = null
+
+
+        if (position > listCoord.length || position < -1)
+            throw Error("Not points found")
+        if (position === -1) {
+            pointToReturn = listCoord[listCoord.length - 1]
+            return pointToReturn
+        }
+
+        pointToReturn = listCoord[position]
+        return pointToReturn
     }
 
 }

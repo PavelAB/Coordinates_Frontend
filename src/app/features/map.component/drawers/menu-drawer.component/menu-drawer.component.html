@@ -11,17 +11,36 @@
         }
     </div>
     <div>
-        Track
+        <div class="trackInfo">
+            Track
+            
+            @if(track()){
+                <p>Distance : {{track()?.Distance}}</p>
+                <p>Descent : {{track()?.Descent}}</p>
+                <p>Ascent : {{track()?.Ascent}}</p>
+                <p>Start point : {{startPoint()?.lon}}, {{startPoint()?.lat}}</p>
+                <p>End point : {{endPoint()?.lon}}, {{endPoint()?.lat}}</p>
+    
+            }
+        </div>
+
+        <div class="TrackButtons">
+            <div>
+                <button (click)="handleGenerateTrack()">GetTrack</button>
+            </div>
+            <div>
+                <button (click)="handleCreateTrack()">Save track</button>
+            </div>
+            <div>
+                <button (click)="handleCreateTrack()" disabled> Download GPX </button>
+            </div>
+        </div>
     </div>
-    <div>
-        <button (click)="handleCreateTrack()">Create track</button>
-    </div>
+    
     <div>
         Autre..
     </div>
-    <div>
-        <button (click)="handleGenerateTrack()">GetTrack</button>
-    </div>
+    
     <button class="btn-close" (click)="handleClick()">Close</button>
 </aside>
 

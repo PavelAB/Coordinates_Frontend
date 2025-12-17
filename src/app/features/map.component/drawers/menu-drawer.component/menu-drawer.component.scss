@@ -31,3 +31,15 @@
     font-size: 1.2rem;
     cursor: pointer;
   }
+
+  .TrackButtons{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+  }
+  .trackInfo{
+    margin: 20px;
+    display: flex;
+    gap: 2px;
+    flex-direction: column;
+  }
