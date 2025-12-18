@@ -1,6 +1,6 @@
-import { Component, effect, inject, signal } from '@angular/core'
+import { Component, effect, inject, OnInit, signal } from '@angular/core'
 import { MenuDrawerComponent } from "./drawers/menu-drawer.component/menu-drawer.component"
-import { SpotService } from './services/spot.service'
+import { SpotApi } from './services/spotApi.service'
 import { SpotParams } from './models/SpotsParams'
 import { AfterViewInit, ElementRef, ViewChild } from '@angular/core'
 import Map from 'ol/Map'
@@ -21,6 +21,7 @@ import { PointCoords, PointType } from './models/Points'
 import { MapStateService } from './services/map-state.service'
 import { Spot } from './models/Spot'
 import { OrsStore } from './services/ors-store.service'
+import { SpotStore } from './services/spot-store.service'
 
 
 type PointMode = 'none' | 'start' | 'end'
@@ -31,18 +32,23 @@ type PointMode = 'none' | 'start' | 'end'
     templateUrl: './map.component.html',
     styleUrl: './map.component.scss',
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnInit {
 
     currentMode: PointMode = 'none'
 
-    private readonly _spotService = inject(SpotService)
     private readonly mapState = inject(MapStateService)
     private readonly orsStore = inject(OrsStore)
+    private readonly _spotStore = inject(SpotStore)
 
-    spotsLight = this._spotService.getSpotsLight({} as SpotParams)
     private orsTrack = this.orsStore.track
     firstModalOpen = signal(false)
+    readonly spotsLight = this._spotStore.spotsLight
     pointSelected = signal<PointCoords | null>(null)
+
+
+    ngOnInit(): void {
+        this._spotStore.loadSpotsLight({} as SpotParams)
+    }
 
     // Map variables    
 

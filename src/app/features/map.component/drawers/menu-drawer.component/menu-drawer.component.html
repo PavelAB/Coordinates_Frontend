@@ -9,6 +9,14 @@
             <p>Lat : {{ routePoints().end!.lat }}<br>
             Lon : {{ routePoints().end!.lon }}</p>
         }
+        <div>
+            @if(spotsLight()){
+                <h3>Spot list</h3>
+                @for(spot of spotsLight()!; track spot.IdSpot){
+                    <p>{{spot.Name}}</p>
+                }
+            }
+        </div>
     </div>
     <div>
         <div class="trackInfo">

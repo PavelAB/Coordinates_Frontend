@@ -17,21 +17,39 @@ export class CrudService<T, P extends SpotParams | TrackParams> {
     constructor(private readonly baseUrl: string) { }
 
     /** GET — récupère une liste */
-    getAll(endpoint: string, params: P) {
-        const request$: Observable<T[]> = this.http
-            .get<Result<T[]>>(`${this.baseUrl}/${endpoint}`, {
-                params: addParams<P>(params)
-            })
-            .pipe(
-                map(res => res.Content as T[]),
-                catchError((err: HttpErrorResponse) => {
-                    console.error('Erreur GET', err)
-                    return of([] as T[])
-                })
-            )
+    getAll(endpoint: string, params: P): Observable<T[] | null> {
+        // const request$: Observable<T[]> = this.http
+        //     .get<Result<T[]>>(`${this.baseUrl}/${endpoint}`, {
+        //         params: addParams<P>(params)
+        //     })
+        //     .pipe(
+        //         map(res => res.Content as T[]),
+        //         catchError((err: HttpErrorResponse) => {
+        //             console.error('Erreur GET', err)
+        //             return of([] as T[])
+        //         })
+        //     )
 
-        return toSignal(request$, { initialValue: [] })
+        // return toSignal(request$, { initialValue: [] })
+        return this.http
+            .get<Result<T[]>>(
+                `${this.baseUrl}/${endpoint}`,
+                { params: addParams(params) }
+            )
+            .pipe(
+                map(res => res.Content as T[])
+            )
     }
+    // getSpotsLight(params: SpotParams): Observable<Spot[]> {
+    //         return this._http
+    //             .get<Result<Spot[]>>(
+    //                 `${BASE_URL}/Spot/GetSpotsLight`,
+    //                 { params: addParams(params) }
+    //             )
+    //             .pipe(
+    //                 map(res => res.Content as Spot[])
+    //             )
+    //     }
 
     /** GET by ID — récupère un élément spécifique */
     getById(endpoint: string, id: string) {

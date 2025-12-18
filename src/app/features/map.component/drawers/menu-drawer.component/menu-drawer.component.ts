@@ -6,6 +6,9 @@ import { TrackService } from '@features/map.component/services/track.service'
 import { TrackToCreate } from '@features/map.component/models/Track'
 import { AuthService } from '@features/auth.component/services/auth.service'
 import { PointCoords } from '@features/map.component/models/Points'
+import { SpotApi } from '@features/map.component/services/spotApi.service'
+import { SpotParams } from '@features/map.component/models/SpotsParams'
+import { SpotStore } from '@features/map.component/services/spot-store.service'
 
 @Component({
     selector: 'app-menu-drawer',
@@ -19,11 +22,12 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
     private readonly trackService = inject(TrackService)
     private readonly orsStore = inject(OrsStore)
     private readonly _auth = inject(AuthService)
-
+    private readonly _spotStore = inject(SpotStore)
 
     user = this._auth.user
     routePoints = this.mapState.routePoints
     readonly track = this.orsStore.track
+    readonly spotsLight = this._spotStore.spotsLight
     readonly startPoint = computed(() => {
 
         const track = this.track()
@@ -48,6 +52,11 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
         if (!t) return
         console.log('Track changed', t)
     })
+    private readonly _spotEffect = effect(() => {
+        const s = this.spotsLight()
+        if (!s) return
+        console.log('Spots getted', s)
+    })
 
     private readonly _ResultEffect = effect(() => {
         const result = this.createResult()
@@ -57,6 +66,7 @@ export class MenuDrawerComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         console.log("Drawer opened ")
+
     }
 
     ngOnDestroy(): void {
